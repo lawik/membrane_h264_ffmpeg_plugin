@@ -210,6 +210,15 @@ UNIFEX_TERM encode(UnifexEnv *env, UnifexPayload *payload, int64_t pts,
   int64_t *dts_list = NULL;
   int64_t *pts_list = NULL;
 
+  // The frame is read straight from the payload with the dimensions and pixel format
+  // the encoder was created with, so a shorter payload would be read out of bounds.
+  int frame_size = av_image_get_buffer_size(
+      state->codec_ctx->pix_fmt, state->codec_ctx->width,
+      state->codec_ctx->height, 1);
+  if (frame_size < 0 || payload->size < (unsigned int)frame_size) {
+    return encode_result_error(env, "invalid_frame_size");
+  }
+
   AVFrame *frame = av_frame_alloc();
   frame->format = state->codec_ctx->pix_fmt;
   frame->width = state->codec_ctx->width;
