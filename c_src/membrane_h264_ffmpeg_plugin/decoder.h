@@ -17,3 +17,5 @@ typedef struct _h264_decoder_state {
 
 #define DECODER_SEND_PKT_ERROR -1
 #define DECODER_DECODE_ERROR -2
+#define DECODER_UNSUPPORTED_PIX_FMT_ERROR -3
+#define DECODER_ALLOC_ERROR -4
